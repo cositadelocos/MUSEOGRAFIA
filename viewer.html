@@ -90,6 +90,20 @@
             letter-spacing: 1px;
             opacity: 0.7;
             border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        .touch-hint {
+            display: none;
+            margin-top: 5px;
+            color: #00f3ff;
+            font-weight: 600;
+        }
+
+        @media (pointer: coarse) {
+            .touch-hint {
+                display: block;
+            }
         }
 
         #loading {
@@ -145,7 +159,8 @@
         <a href="index.html" class="back-link">VOLVER AL MUSEO</a>
 
         <div class="controls-hint">
-            MOUSE IZQUIERDO: ROTAR | MOUSE DERECHO: MOVER | RUEDA: ZOOM
+            <span class="pc-hint">MOUSE IZQUIERDO: ROTAR | MOUSE DERECHO: MOVER | RUEDA: ZOOM</span>
+            <div class="touch-hint">TOCA EL FONDO PARA CAMBIAR EL COLOR DEL ENTORNO</div>
         </div>
     </div>
 

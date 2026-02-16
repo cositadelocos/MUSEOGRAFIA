@@ -398,10 +398,11 @@ document.addEventListener('mousemove', (e) => {
     });
 });
 
-// Selector de Módulo 3 (Efecto Negativo)
+// Selector de Módulo 3 (Efecto Negativo) - Solo en PC para evitar problemas de lectura en móvil
 const mod3Panel = document.getElementById('modulo-3-detail');
 if (mod3Panel) {
     mod3Panel.addEventListener('scroll', () => {
+        if (isTouchDevice) return; // Desactivar inversión en móvil
         const scrollPercent = mod3Panel.scrollTop / (mod3Panel.scrollHeight - mod3Panel.clientHeight);
         if (scrollPercent > 0.45) {
             mod3Panel.classList.add('inverted-theme');
