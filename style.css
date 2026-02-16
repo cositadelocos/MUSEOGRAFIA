@@ -211,14 +211,17 @@ html {
 }
 
 .joystick-base {
-    width: 120px;
-    height: 120px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(0, 243, 255, 0.2);
+    width: 130px;
+    height: 130px;
+    background: rgba(0, 243, 255, 0.05);
+    border: 1px solid rgba(0, 243, 255, 0.3);
     border-radius: 50%;
     position: relative;
     pointer-events: auto;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(15px);
+    touch-action: none;
+    /* Crucial para evitar scroll del navegador */
+    box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.1);
 }
 
 .joystick-handle {
@@ -250,78 +253,109 @@ html {
 }
 
 /* RESPONSIVE DESIGN (MEDIA QUERIES) */
-@media screen and (max-width: 768px) {
-    .landing-content h1 {
-        font-size: 2.2rem;
+@media screen and (max-width: 1024px) {
+
+    /* Fondo específico para móvil */
+    body.mobile-mode {
+        background: #000;
     }
 
     .landing-content {
-        padding: 30px;
-        width: 90%;
+        padding: 50px 30px;
+        width: 85%;
+        border-radius: 40px;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.9);
+    }
+
+    .landing-content h1 {
+        font-size: 2.5rem;
+        letter-spacing: 0.05em;
+        line-height: 1.2;
+    }
+
+    .landing-category {
+        font-size: 0.65rem;
+        margin-bottom: 15px;
+    }
+
+    .landing-description p {
+        font-size: 1.05rem;
+        line-height: 1.7;
+        color: #ddd;
     }
 
     .landing-buttons {
         flex-direction: column;
+        gap: 12px;
+        margin-top: 30px;
     }
 
-    #info-overlay {
-        width: 90%;
-        bottom: 200px;
-        /* Subir para dejar espacio al joystick */
-        padding: 15px 25px;
+    .landing-buttons button {
+        width: 100%;
+        padding: 18px;
+        font-size: 0.85rem;
+        letter-spacing: 0.15em;
     }
 
+    /* Paneles de Detalle Premium para Móvil */
     .detail-panel {
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        padding: 20px;
-        box-sizing: border-box;
-        overflow-y: auto;
-        background: rgba(0, 0, 0, 0.95);
+        padding: 100px 30px 180px !important;
+        background: linear-gradient(to bottom, #0a0a0a 0%, #000 100%) !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .materials-layout,
     .modulo-central-detail {
         flex-direction: column !important;
-        align-items: center !important;
-        padding: 80px 20px 40px !important;
+        gap: 40px !important;
+        text-align: center;
     }
 
-    .collage-container {
-        width: 300px;
-        height: 300px;
-    }
-
-    .tech-cards-container {
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .tech-card {
-        width: 100%;
-        height: auto;
-        min-height: 300px;
+    #info-overlay {
+        width: 88%;
+        bottom: 160px;
+        padding: 24px;
+        background: rgba(0, 0, 0, 0.8);
+        border: 1px solid rgba(0, 243, 255, 0.3);
     }
 
     #btn-back {
-        top: 20px;
-        right: 20px;
-        padding: 10px 20px;
+        top: 25px;
+        right: 25px;
+        padding: 12px 24px;
+        font-size: 0.75rem;
+        background: rgba(0, 243, 255, 0.15);
+        border-color: rgba(0, 243, 255, 0.5);
     }
 
-    #ui-instructions {
-        display: none !important;
+    #btn-viewer-link {
+        top: 100px !important;
+        right: 25px !important;
+        padding: 12px 24px !important;
+        font-size: 0.7rem !important;
     }
 
-    .h-cards-track {
-        flex-direction: column;
-        gap: 20px;
+    /* Joystick Visual Polish */
+    .joystick-base {
+        border-color: rgba(0, 243, 255, 0.4);
+        background: rgba(0, 243, 255, 0.08);
+        box-shadow: 0 0 30px rgba(0, 243, 255, 0.15);
     }
 
-    .horizontal-wrapper {
-        overflow-y: auto;
-        padding: 80px 20px;
+    .joystick-handle {
+        background: #fff;
+        box-shadow: 0 0 15px #fff;
+    }
+
+    .mobile-action-btn {
+        background: #fff;
+        color: #000;
+        box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
     }
 }
 

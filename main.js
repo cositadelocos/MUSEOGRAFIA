@@ -179,10 +179,16 @@ let activeDetailId = null;
 // --- LÓGICA DE CONTROLES MÓVILES (JOYSTICK VIRTUAL) ---
 let joystickX = 0;
 let joystickY = 0;
-const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+// Detección más robusta de dispositivos táctiles o pantallas pequeñas
+const isTouchDevice = window.matchMedia("(pointer: coarse)").matches ||
+    'ontouchstart' in window ||
+    window.innerWidth < 1024;
 
 if (isTouchDevice) {
-    document.getElementById('mobile-controls').classList.remove('hidden');
+    document.body.classList.add('mobile-mode'); // Para CSS específico de móvil
+    const mobileControls = document.getElementById('mobile-controls');
+    mobileControls.classList.remove('hidden');
 
     const joystickBase = document.querySelector('.joystick-base');
     const joystickHandle = document.querySelector('.joystick-handle');
@@ -191,9 +197,15 @@ if (isTouchDevice) {
     let isDragging = false;
     const maxDistance = 45;
 
-    const handleStart = (e) => { isDragging = true; handleMove(e); };
+    const handleStart = (e) => {
+        isDragging = true;
+        handleMove(e);
+        e.preventDefault(); // Prevenir scroll accidental
+    };
+
     const handleMove = (e) => {
         if (!isDragging) return;
+
         const touch = e.touches ? e.touches[0] : e;
         const rect = joystickBase.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
@@ -209,9 +221,12 @@ if (isTouchDevice) {
         }
 
         joystickHandle.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
-        joystickX = dx / maxDistance;
-        joystickY = dy / maxDistance;
+
+        // Sensibilidad ajustada para móvil
+        joystickX = (dx / maxDistance) * 1.5;
+        joystickY = (dy / maxDistance) * 1.5;
     };
+
     const handleEnd = () => {
         isDragging = false;
         joystickHandle.style.transform = 'translate(-50%, -50%)';
@@ -219,8 +234,8 @@ if (isTouchDevice) {
         joystickY = 0;
     };
 
-    joystickBase.addEventListener('touchstart', handleStart);
-    window.addEventListener('touchmove', handleMove);
+    joystickBase.addEventListener('touchstart', handleStart, { passive: false });
+    window.addEventListener('touchmove', handleMove, { passive: false });
     window.addEventListener('touchend', handleEnd);
 
     btnMobileView.onclick = () => { if (activeDetailId) switchScene(activeDetailId); };
