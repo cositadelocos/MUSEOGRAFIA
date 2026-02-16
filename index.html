@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Museo 3D Minimalista</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- PANTALLA DE INICIO (PORTADA) -->
+    <div id="landing-page">
+        <div class="landing-content">
+            <span class="landing-category">PROYECTO ELECTIVO DISEÑO I: INDUSTRIAS TECNOLÓGICAS</span>
+            <h1>GUÍA: MUSEO DE TRAJES</h1>
+            <div class="landing-divider"></div>
+            <div class="landing-description">
+                <p>Bienvenido al museo interactivo de trajes. Explora cada módulo, descubre la historia, los diseños y
+                    la evolución de la indumentaria a través de un recorrido digital inmersivo.</p>
+                <p>Navega libremente por las salas, interactúa con las piezas y conoce la información de cada colección.
+                </p>
+            </div>
+            <div class="landing-hints">
+                <p>🎮 Usa el mouse o los controles para desplazarte por el museo y seleccionar los módulos interactivos.
+                    Haz clic sobre los objetos para descubrir su contenido.</p>
+            </div>
+            <div class="landing-buttons">
+                <button id="btn-start" class="btn-primary">COMENZAR RECORRIDO</button>
+                <button id="btn-how" class="btn-secondary">¿CÓMO NAVEGAR?</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ¿CÓMO NAVEGAR? -->
+    <div id="nav-modal" class="modal-nav hidden">
+        <div class="modal-nav-content">
+            <h2>GUÍA DE NAVEGACIÓN</h2>
+            <div class="modal-nav-body">
+                <div class="nav-item">
+                    <span class="nav-key">W / ↑</span>
+                    <p>Moverse hacia ADELANTE</p>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-key">S / ↓</span>
+                    <p>Moverse hacia ATRÁS</p>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-key">A / ←</span>
+                    <p>Moverse a la IZQUIERDA</p>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-key">D / →</span>
+                    <p>Moverse a la DERECHA</p>
+                </div>
+                <div class="nav-divider"></div>
+                <p className="nav-extra">🎯 <b>Interactuar:</b> Acércate a un módulo. Cuando aparezca el botón "VER
+                    DETALLE", haz clic en él o presiona el botón proyector.</p>
+                <p className="nav-extra">🔍 <b>Visor 3D:</b> En la sala principal, usa el botón "MODELO 3D" para ver la
+                    pieza en alta definición.</p>
+            </div>
+            <button id="btn-close-modal">ENTENDIDO</button>
+        </div>
+    </div>
+    <div id="container"></div>
+
+    <div id="info-overlay" class="hidden">
+        <div class="info-content">
+            <h2 id="station-title">Cargando...</h2>
+            <p id="station-text">Información educativa aquí.</p>
+        </div>
+    </div>
+
+    <div id="ui-instructions">
+        Usa <b>WASD</b> o <b>Flechas</b> para moverte
+    </div>
+
+    <!-- Botón Proyectado para entrar a la sala -->
+    <div id="view-prompt" class="hidden">
+        <button id="btn-view">VER</button>
+    </div>
+
+    <!-- Botón para volver al museo -->
+    <button id="btn-back" class="hidden">VOLVER AL MUSEO</button>
+
+    <!-- Botón para el Visor 3D Externo -->
+    <a href="viewer.html" id="btn-viewer-link">MODELO 3D</a>
+
+    <!-- Overlay de Información en Sala de Detalle (PIEZA CENTRAL) -->
+    <div id="modulo-central-detail" class="detail-panel hidden">
+        <div class="detail-content">
+            <span class="category">MUSEO DE TRAJES</span>
+            <h1>Traje: "Francisco José de Caldas"</h1>
+            <hr>
+            <p>Científico precursor de la ingeniería nacional, coronel y político del partido independentista.
+                <br><br>
+                • Pantalón<br>
+                • chaleco<br>
+                • polainas<br>
+                • casaca
+            </p>
+            <div class="stats">
+                <span><b>ORIGEN:</b> HISTORIA NACIONAL</span>
+            </div>
+        </div>
+
+        <!-- COLLAGE DE EXHIBICIÓN (Imágenes 2t.png a 5t.png) -->
+        <div class="collage-container">
+            <div class="collage-item item-1">
+                <img src="2t.png" alt="Detalle 1">
+                <div class="item-glow"></div>
+            </div>
+            <div class="collage-item item-2">
+                <img src="3t.png" alt="Detalle 2">
+                <div class="item-glow"></div>
+            </div>
+            <div class="collage-item item-3">
+                <img src="4t.png" alt="Detalle 3">
+                <div class="item-glow"></div>
+            </div>
+            <div class="collage-item item-4">
+                <img src="5t.png" alt="Detalle 4">
+                <div class="item-glow"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay de Información de Materiales (MODULO 1) -->
+    <div id="modulo-1-detail" class="detail-panel hidden">
+        <div class="materials-layout">
+            <div class="detail-content">
+                <span class="category">TECNOLOGÍA Y PROCESOS</span>
+                <h1>Materiales y tecnologías</h1>
+                <hr>
+                <p>
+                    <b>Materiales visibles:</b><br><br>
+                    • Casaca de lana o tela gruesa.<br>
+                    • Bordados dorados (posiblemente hilo metálico o sintético).<br>
+                    • Camisa de algodón o lino.<br>
+                    • Pantalón claro de algodón/lino.<br>
+                    • Polainas y zapatos de cuero.<br>
+                    • Botones metálicos.
+                </p>
+            </div>
+
+            <div class="tech-cards-container">
+                <!-- Tarjeta 1: Tecnología Época -->
+                <div class="tech-card" id="card-past">
+                    <div class="card-glow"></div>
+                    <div class="card-inner">
+                        <span class="card-label">S. XVIII–XIX</span>
+                        <h2>Tecnología de la época</h2>
+                        <hr>
+                        <ul>
+                            <li>Producción textil artesanal o protoindustrial.</li>
+                            <li>Hilado y tejido manual.</li>
+                            <li>Bordado y sastrería a mano.</li>
+                            <li>Curtido vegetal del cuero.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 2: Tecnología Actual -->
+                <div class="tech-card" id="card-present">
+                    <div class="card-glow"></div>
+                    <div class="card-inner">
+                        <span class="card-label">REPRESENTACIÓN ACTUAL</span>
+                        <h2>Tecnología de la réplica</h2>
+                        <hr>
+                        <ul>
+                            <li>Máquinas de coser modernas.</li>
+                            <li>Telas industriales y sintéticas.</li>
+                            <li>Bordados mecanizados o contemporáneos.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay de Técnicas de Confección (MODULO 2) -->
+    <div id="modulo-2-detail" class="detail-panel hidden">
+        <div class="scroll-container-v2">
+            <header class="confeccion-header">
+                <h1>Técnicas de confección</h1>
+                <p class="subtitle">SISTEMA CONSTRUCTIVO Y ENSAMBLAJE</p>
+                <div class="header-glow-line"></div>
+            </header>
+
+            <div class="cards-list-v2">
+                <!-- Tarjeta 01 -->
+                <div class="confeccion-card">
+                    <div class="card-glow-effect"></div>
+                    <div class="card-content-v2">
+                        <div class="card-num">01</div>
+                        <h3>Sastrería Estructurada</h3>
+                        <p>Diseño avanzado ajustado al contorno anatómico, definiendo la silueta histórica con precisión
+                            técnica.</p>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 02 -->
+                <div class="confeccion-card">
+                    <div class="card-glow-effect"></div>
+                    <div class="card-content-v2">
+                        <div class="card-num">02</div>
+                        <h3>Bordados de Estatus</h3>
+                        <p>Ornamentación simbólica realizada con hilos metálicos que indican posición social y rango
+                            político.</p>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 03 -->
+                <div class="confeccion-card">
+                    <div class="card-glow-effect"></div>
+                    <div class="card-content-v2">
+                        <div class="card-num">03</div>
+                        <h3>Ensamblaje Dual</h3>
+                        <p>Combinación de costuras internas y externas reforzadas para garantizar una durabilidad
+                            superior.</p>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 04 -->
+                <div class="confeccion-card">
+                    <div class="card-glow-effect"></div>
+                    <div class="card-content-v2">
+                        <div class="card-num">04</div>
+                        <h3>Sistema Estratificado</h3>
+                        <p>Configuración multicapa: camisa, chaleco, casaca, pantalón y polainas coordinadas.</p>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 05 -->
+                <div class="confeccion-card">
+                    <div class="card-glow-effect"></div>
+                    <div class="card-content-v2">
+                        <div class="card-num">05</div>
+                        <h3>Componentes Funcionales</h3>
+                        <p>Uso estratégico de botones y correas metálicas para un ajuste dinámico y funcional.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay MODULO 3 (Forma, Función y Contexto) -->
+    <div id="modulo-3-detail" class="detail-panel hidden">
+        <div class="scroll-container-v2">
+            <header class="confeccion-header">
+                <h1>Forma, función y contexto</h1>
+                <p class="subtitle">ANÁLISIS SOCIOCULTURAL Y TECNOLÓGICO</p>
+                <div class="header-glow-line"></div>
+            </header>
+
+            <div class="cards-list-v2">
+                <!-- Sección 1: Análisis -->
+                <div class="confeccion-card">
+                    <div class="card-glow-effect"></div>
+                    <div class="card-content-v2">
+                        <div class="card-num">01</div>
+                        <h3>Forma</h3>
+                        <p>Silueta elegante, ajustada en la parte superior y con amplitud controlada en la base,
+                            proyectando una imagen de rigidez y orden histórico.</p>
+                    </div>
+                </div>
+
+                <div class="confeccion-card">
+                    <div class="card-glow-effect"></div>
+                    <div class="card-content-v2">
+                        <div class="card-num">02</div>
+                        <h3>Función</h3>
+                        <p>Representación de estatus social y nivel educativo. Su propósito es más simbólico que
+                            práctico, comunicando autoridad intelectual inmediata.</p>
+                    </div>
+                </div>
+
+                <div class="confeccion-card">
+                    <div class="card-glow-effect"></div>
+                    <div class="card-content-v2">
+                        <div class="card-num">03</div>
+                        <h3>Contexto</h3>
+                        <p>Finales de la época colonial e inicios de la independencia. Inspirada en la moda europea,
+                            usada por figuras como <strong>Francisco José de Caldas</strong>.</p>
+                    </div>
+                </div>
+
+                <!-- Separador Creativo -->
+                <div class="header-glow-line" style="margin: 60px auto;"></div>
+                <h2
+                    style="color: white; text-align: center; text-transform: uppercase; letter-spacing: 5px; margin-bottom: 40px; font-size: 1.2rem; opacity: 0.8;">
+                    Revelación Tecnológica</h2>
+
+                <!-- Sección 2: Tecnología -->
+                <div class="confeccion-card">
+                    <div class="card-glow-effect"></div>
+                    <div class="card-content-v2">
+                        <div class="card-num">04</div>
+                        <h3>Nivel Artesanal</h3>
+                        <p>Alto grado de especialización en técnicas de sastrería y bordado de alta precisión para las
+                            élites.</p>
+                    </div>
+                </div>
+
+                <div class="confeccion-card">
+                    <div class="card-glow-effect"></div>
+                    <div class="card-content-v2">
+                        <div class="card-num">05</div>
+                        <h3>Oficios Organizados</h3>
+                        <p>Presencia de gremios y oficios especializados: sastres, zapateros y bordadores con formación
+                            técnica.</p>
+                    </div>
+                </div>
+
+                <div class="confeccion-card">
+                    <div class="card-glow-effect"></div>
+                    <div class="card-content-v2">
+                        <div class="card-num">06</div>
+                        <h3>Estandarización Manual</h3>
+                        <p>Producción manual que ya mostraba indicios de estandarización en patrones y medidas
+                            anatómicas.</p>
+                    </div>
+                </div>
+
+                <div class="confeccion-card">
+                    <div class="card-glow-effect"></div>
+                    <div class="card-content-v2">
+                        <div class="card-num">07</div>
+                        <h3>Redes Comerciales</h3>
+                        <p>Fuerte dependencia de redes internacionales para la obtención de textiles y materiales de
+                            lujo.</p>
+                    </div>
+                </div>
+
+                <div class="confeccion-card">
+                    <div class="card-glow-effect"></div>
+                    <div class="card-content-v2">
+                        <div class="card-num">08</div>
+                        <h3>Estado Técnico</h3>
+                        <p>Refleja una sociedad técnicamente avanzada en lo manual, pero aún en una etapa previa a la
+                            revolución industrial total.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay MODULO 4 (Lectura Museográfica) -->
+    <div id="modulo-4-detail" class="detail-panel hidden">
+        <div class="horizontal-wrapper">
+            <header class="museografico-header">
+                <h1>Lectura museográfica del traje</h1>
+                <p>ANÁLISIS DE LA REPRESENTACIÓN INSTITUCIONAL</p>
+            </header>
+
+            <div class="h-scroll-viewport">
+                <div class="h-cards-track">
+                    <!-- Sección 1 -->
+                    <div class="museo-card tech-card">
+                        <div class="card-glow-effect"></div>
+                        <div class="card-header">
+                            <span class="step-badge">01</span>
+                            <h3>Procesos productivos</h3>
+                        </div>
+                        <ul class="museo-list">
+                            <li>Predominan técnicas artesanales y protoindustriales.</li>
+                            <li>La réplica usa tecnologías modernas.</li>
+                            <li>Se combinan saberes manuales, mecánicos y repetición de patrones.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Sección 2 -->
+                    <div class="museo-card tech-card">
+                        <div class="card-glow-effect"></div>
+                        <div class="card-header">
+                            <span class="step-badge">02</span>
+                            <h3>Cómo lo presenta el museo</h3>
+                        </div>
+                        <ul class="museo-list">
+                            <li>Como objeto histórico ligado a un personaje.</li>
+                            <li>No explica mucho sobre fabricación o industria textil.</li>
+                            <li>Se ve como pieza única, no como producto de un sistema.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Sección 3 -->
+                    <div class="museo-card tech-card">
+                        <div class="card-glow-effect"></div>
+                        <div class="card-header">
+                            <span class="step-badge">03</span>
+                            <h3>Forma de exhibición</h3>
+                        </div>
+                        <ul class="museo-list">
+                            <li>Maniquí de tamaño real y postura neutra.</li>
+                            <li>Iluminación general sin énfasis técnico.</li>
+                            <li>Presentación pensada para observar y contemplar.</li>
+                            <li>Prioridad: estética e historia más que técnica.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Sección 4 -->
+                    <div class="museo-card tech-card">
+                        <div class="card-glow-effect"></div>
+                        <div class="card-header">
+                            <span class="step-badge">04</span>
+                            <h3>Narrativa del museo</h3>
+                        </div>
+                        <div class="narrativa-grid">
+                            <div class="sub-narrativa">
+                                <strong>Puntos clave:</strong>
+                                <span>Identidad, Representación Social, Patrimonio.</span>
+                            </div>
+                            <div class="sub-narrativa warn">
+                                <strong>Vacíos técnicos:</strong>
+                                <span>Ausencia de procesos de diseño y fabricación.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scroll-hint">
+                <span>USA LA RUEDA DEL MOUSE PARA DESPLAZARTE LATERALMENTE</span>
+                <div class="hint-arrow">→</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay de transición -->
+    <div id="fade-overlay"></div>
+
+    <!-- Three.js UMD Build -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <!-- Cargador GLTF (Versión compatible con Global THREE) -->
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r147/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>

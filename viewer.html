@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor 3D - Museo de Trajes</title>
+    <style>
+        body {
+            margin: 0;
+            background: #050505;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #ui-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .viewer-header {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            pointer-events: auto;
+        }
+
+        .viewer-header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #fff, #00f3ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .viewer-header p {
+            margin: 5px 0 0 0;
+            opacity: 0.5;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-link:hover {
+            background: rgba(0, 243, 255, 0.2);
+            border-color: #00f3ff;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .controls-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            opacity: 0.7;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.5s ease;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(0, 243, 255, 0.3);
+            border-top: 3px solid #00f3ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loading">
+        <div class="spinner"></div>
+        <p>CARGANDO MODELO 3D...</p>
+    </div>
+
+    <div id="ui-container">
+        <div class="viewer-header">
+            <h1>TRAJE: FRANCISCO JOSÉ DE CALDAS</h1>
+            <p>MODELO INTERACTIVO .GLB</p>
+        </div>
+
+        <a href="index.html" class="back-link">VOLVER AL MUSEO</a>
+
+        <div class="controls-hint">
+            MOUSE IZQUIERDO: ROTAR | MOUSE DERECHO: MOVER | RUEDA: ZOOM
+        </div>
+    </div>
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r160/examples/jsm/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r160/examples/jsm/controls/OrbitControls.js"></script>
+
+    <script>
+        // No podemos usar JSM directamente sin un servidor o import maps en archivos planos
+        // Así que usaremos la versión global o un pequeño truco de script
+    </script>
+
+    <!-- Usaremos versiones compatibles con Global THREE para evitar líos de módulos sin servidor -->
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r147/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r147/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        let scene, camera, renderer, controls;
+
+        function init() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x050505);
+
+            // Neblina oscura y sutil (no tapa el modelo, da profundidad)
+            scene.fog = new THREE.FogExp2(0x050505, 0.035);
+
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(5, 5, 5);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.shadowMap.enabled = true;
+            renderer.outputEncoding = THREE.sRGBEncoding;
+            document.body.appendChild(renderer.domElement);
+
+            // Controles
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+
+            // Iluminación
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+
+            const directLight = new THREE.DirectionalLight(0xffffff, 1);
+            directLight.position.set(5, 10, 7.5);
+            directLight.castShadow = true;
+            scene.add(directLight);
+
+            const pointLight = new THREE.PointLight(0xffffff, 1);
+            pointLight.position.set(-5, 5, -5);
+            scene.add(pointLight);
+
+            // Luz de ambiente de color interactiva
+            const mouseLight = new THREE.PointLight(0x0088cc, 0.5);
+            mouseLight.position.set(0, 0, 10);
+            scene.add(mouseLight);
+
+            // Interactividad con el Mouse para el fondo
+            // Interactividad con el Mouse para el fondo (Neon Atmospheric)
+            window.addEventListener('mousemove', (e) => {
+                const x = e.clientX / window.innerWidth;
+                const y = e.clientY / window.innerHeight;
+
+                // Color de neblina oscuro pero con matiz de color (neon profundo)
+                const hue = (x * 0.2) + 0.55;
+                const color = new THREE.Color().setHSL(hue, 0.6, 0.05); // Muy oscuro
+                scene.background.lerp(color, 0.05);
+                scene.fog.color.lerp(color, 0.05);
+
+                // Luz de ambiente que sigue al mouse
+                mouseLight.position.x = (x - 0.5) * 40;
+                mouseLight.position.y = (0.5 - y) * 40;
+                mouseLight.color.setHSL(hue, 0.8, 0.55);
+            });
+
+            // Carga de Modelo
+            const loader = new THREE.GLTFLoader();
+            loader.load('modelo.glb', (gltf) => {
+                const model = gltf.scene;
+
+                // Centrar modelo
+                const box = new THREE.Box3().setFromObject(model);
+                const center = box.getCenter(new THREE.Vector3());
+                model.position.sub(center);
+
+                scene.add(model);
+
+                // Ajustar cámara al tamaño del modelo
+                const size = box.getSize(new THREE.Vector3());
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const fov = camera.fov * (Math.PI / 180);
+                let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
+                cameraZ *= 2.5; // Un poco de espacio extra
+                camera.position.set(cameraZ, cameraZ / 2, cameraZ);
+                camera.lookAt(0, 0, 0);
+                controls.update();
+
+                // Ocultar loading
+                document.getElementById('loading').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+                }, 500);
+
+            }, undefined, (error) => {
+                console.error(error);
+                alert("Error al cargar el modelo 3D");
+            });
+
+            window.addEventListener('resize', onWindowResize, false);
+            animate();
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
