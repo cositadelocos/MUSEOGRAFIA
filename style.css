@@ -365,7 +365,7 @@ html {
         letter-spacing: 0.15em;
     }
 
-    /* Paneles de Detalle Premium para Móvil */
+    /* Ajuste de paneles de detalle para que no tapen el joystick */
     .detail-panel {
         padding: 50px 20px 180px !important;
         background: linear-gradient(to bottom, #0a0a0a 0%, #000 100%) !important;
@@ -395,12 +395,51 @@ html {
         padding: 0 10px;
     }
 
+    /* POSICIONAMIENTO EXTREMO DE CONTROLES (Círculos rojos del usuario) */
+    #mobile-controls {
+        bottom: 20px !important;
+        padding: 0 15px !important;
+        /* Pegar a los bordes */
+        justify-content: space-between !important;
+    }
+
+    .joystick-base {
+        width: 115px !important;
+        height: 115px !important;
+    }
+
+    .mobile-action-btn {
+        width: 80px !important;
+        height: 80px !important;
+        font-size: 0.85rem;
+    }
+
+    /* PANEL DE INFORMACIÓN MÁS ABAJO Y PEQUEÑO (Rectángulo rojo del usuario) */
     #info-overlay {
-        width: 88%;
-        bottom: 160px;
-        padding: 24px;
-        background: rgba(0, 0, 0, 0.8);
-        border: 1px solid rgba(0, 243, 255, 0.3);
+        width: 50% !important;
+        /* Más pequeño */
+        max-width: 350px;
+        bottom: 20px !important;
+        /* Más abajo */
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        /* Centrado absoluto */
+        padding: 12px !important;
+        background: rgba(0, 0, 0, 0.5) !important;
+        border: 1px solid rgba(0, 243, 255, 0.15) !important;
+        backdrop-filter: blur(8px) !important;
+        pointer-events: none;
+        /* Que no bloquee clicks si se superpone */
+    }
+
+    #info-overlay h3 {
+        font-size: 0.9rem !important;
+        margin-bottom: 5px !important;
+    }
+
+    #info-overlay p {
+        font-size: 0.75rem !important;
+        opacity: 0.8;
     }
 
     #btn-back {
@@ -419,23 +458,92 @@ html {
         font-size: 0.7rem !important;
     }
 
-    /* Joystick Visual Polish */
-    .joystick-base {
-        border-color: rgba(0, 243, 255, 0.4);
-        background: rgba(0, 243, 255, 0.08);
-        box-shadow: 0 0 30px rgba(0, 243, 255, 0.15);
+    /* MEJORA DE LEGIBILIDAD EN MÓDULOS */
+    .detail-panel h1,
+    .detail-panel h2 {
+        font-size: 1.4rem !important;
+        /* Títulos más pequeños */
+        letter-spacing: 0.1em !important;
+        margin-bottom: 15px !important;
     }
 
-    .joystick-handle {
-        background: #fff;
-        box-shadow: 0 0 15px #fff;
+    .detail-panel p,
+    .detail-panel li {
+        font-size: 0.85rem !important;
+        /* Texto más legible */
+        line-height: 1.5 !important;
     }
 
-    .mobile-action-btn {
-        background: #fff;
-        color: #000;
-        box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
+    /* FIX: MODAL DE INSTRUCCIONES SCROLLABLE */
+    .modal-nav {
+        overflow-y: auto !important;
+        padding: 40px 0 !important;
+        display: block !important;
+        /* Permitir scroll natural */
     }
+
+    .modal-nav-content {
+        margin: 0 auto !important;
+        width: 85% !important;
+        padding: 30px 20px !important;
+        transform: none !important;
+        /* Evitar conflictos con scroll */
+        position: relative;
+    }
+
+    .modal-nav-content h2 {
+        font-size: 1.2rem !important;
+        margin-bottom: 25px !important;
+    }
+
+    .nav-item {
+        gap: 10px !important;
+    }
+
+    .nav-key {
+        padding: 5px 10px !important;
+        font-size: 0.7rem !important;
+        min-width: 60px !important;
+    }
+
+    /* FIX: PADDING EXTRA PARA CONTROLES */
+    .detail-panel {
+        padding-bottom: 250px !important;
+    }
+
+    /* AJUSTES DE ELEMENTOS ESPECÍFICOS */
+    .collage-container {
+        width: 260px !important;
+        height: 260px !important;
+    }
+
+    .tech-card {
+        padding: 15px !important;
+        min-height: 180px !important;
+    }
+
+    .h-card {
+        width: 85% !important;
+        flex-shrink: 0;
+    }
+}
+
+/* Joystick Visual Polish */
+.joystick-base {
+    border-color: rgba(0, 243, 255, 0.4);
+    background: rgba(0, 243, 255, 0.08);
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.15);
+}
+
+.joystick-handle {
+    background: #fff;
+    box-shadow: 0 0 15px #fff;
+}
+
+.mobile-action-btn {
+    background: #fff;
+    color: #000;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
 }
 
 /* Panel de Información y Collage */
@@ -1471,6 +1579,8 @@ html {
     width: 90%;
     text-align: center;
     box-shadow: 0 0 50px rgba(0, 243, 255, 0.2);
+    position: relative;
+    /* Para scroll */
 }
 
 .modal-nav-content h2 {
