@@ -176,6 +176,56 @@ const fadeOverlay = document.getElementById('fade-overlay');
 
 let activeDetailId = null;
 
+// --- LÓGICA DE CONTROLES MÓVILES (JOYSTICK VIRTUAL) ---
+let joystickX = 0;
+let joystickY = 0;
+const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+if (isTouchDevice) {
+    document.getElementById('mobile-controls').classList.remove('hidden');
+
+    const joystickBase = document.querySelector('.joystick-base');
+    const joystickHandle = document.querySelector('.joystick-handle');
+    const btnMobileView = document.getElementById('btn-mobile-view');
+
+    let isDragging = false;
+    const maxDistance = 45;
+
+    const handleStart = (e) => { isDragging = true; handleMove(e); };
+    const handleMove = (e) => {
+        if (!isDragging) return;
+        const touch = e.touches ? e.touches[0] : e;
+        const rect = joystickBase.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        let dx = touch.clientX - centerX;
+        let dy = touch.clientY - centerY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance > maxDistance) {
+            dx = (dx / distance) * maxDistance;
+            dy = (dy / distance) * maxDistance;
+        }
+
+        joystickHandle.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+        joystickX = dx / maxDistance;
+        joystickY = dy / maxDistance;
+    };
+    const handleEnd = () => {
+        isDragging = false;
+        joystickHandle.style.transform = 'translate(-50%, -50%)';
+        joystickX = 0;
+        joystickY = 0;
+    };
+
+    joystickBase.addEventListener('touchstart', handleStart);
+    window.addEventListener('touchmove', handleMove);
+    window.addEventListener('touchend', handleEnd);
+
+    btnMobileView.onclick = () => { if (activeDetailId) switchScene(activeDetailId); };
+}
+
 btnView.onclick = () => {
     if (activeDetailId) switchScene(activeDetailId);
 };
@@ -236,6 +286,10 @@ function update() {
         if (keys['ArrowDown'] || keys['KeyS']) dz += 0.12;
         if (keys['ArrowLeft'] || keys['KeyA']) dx -= 0.12;
         if (keys['ArrowRight'] || keys['KeyD']) dx += 0.12;
+
+        // Sumar joystick si existe
+        dx += joystickX * 0.12;
+        dz += joystickY * 0.12;
 
         playerGroup.position.x = Math.max(-8.5, Math.min(8.5, playerGroup.position.x + dx));
         playerGroup.position.z = Math.max(-8.5, Math.min(8.5, playerGroup.position.z + dz));
