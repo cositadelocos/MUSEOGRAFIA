@@ -210,6 +210,62 @@ html {
     display: none !important;
 }
 
+/* AVISO DE ORIENTACIÓN */
+#orientation-warning {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+}
+
+.warning-box {
+    padding: 30px;
+}
+
+.rotate-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    animation: rotate-hint 2s infinite linear;
+}
+
+@keyframes rotate-hint {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+#orientation-warning p {
+    font-size: 1.2rem;
+    letter-spacing: 0.2em;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--accent-color);
+}
+
+#orientation-warning span {
+    font-size: 0.9rem;
+    color: #888;
+}
+
+/* Mostrar solo en móvil + retrato */
+@media screen and (max-width: 1024px) and (orientation: portrait) {
+    #orientation-warning {
+        display: flex;
+    }
+}
+
 .joystick-base {
     width: 130px;
     height: 130px;
@@ -260,6 +316,15 @@ html {
         background: #000;
     }
 
+    #landing-page {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+        /* Permitir scroll desde arriba */
+        align-items: center !important;
+        padding: 60px 0 !important;
+    }
+
     .landing-content {
         padding: 50px 30px;
         width: 85%;
@@ -302,18 +367,32 @@ html {
 
     /* Paneles de Detalle Premium para Móvil */
     .detail-panel {
-        padding: 100px 30px 180px !important;
+        padding: 50px 20px 180px !important;
         background: linear-gradient(to bottom, #0a0a0a 0%, #000 100%) !important;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        display: block !important;
+        /* Permitir flujo vertical normal para scroll */
+        height: 100vh;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .detail-panel.hidden {
+        display: none !important;
     }
 
     .materials-layout,
     .modulo-central-detail {
+        display: flex !important;
         flex-direction: column !important;
-        gap: 40px !important;
+        gap: 30px !important;
         text-align: center;
+        width: 100%;
+        padding-top: 60px;
+    }
+
+    .info-content {
+        width: 100% !important;
+        padding: 0 10px;
     }
 
     #info-overlay {
@@ -1227,6 +1306,13 @@ html {
     justify-content: center;
     z-index: 2000;
     transition: opacity 1s ease, visibility 1s;
+    overflow-y: auto;
+    /* Permitir scroll */
+    -webkit-overflow-scrolling: touch;
+    height: 100dvh;
+    /* Dynamic viewport height para móvil */
+    padding: 20px 0;
+    /* Espacio para respirar al scrollear */
 }
 
 #landing-page.hidden {
